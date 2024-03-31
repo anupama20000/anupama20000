@@ -1,114 +1,129 @@
-import java.util.*;
-import java.time.*;
-import javax.lang.model.SourceVersion;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Scanner;
 
 class BloodSugar {
-    private int id;
     private String name;
-    private int yob;
-    private int sugarLevel;
+    private int yearOfBirth;
+    private double bloodSugarLevel;
 
-    public BloodSugar(int id, String name, int yob, int sugarLevel) {
-        this.id = id;
+    public BloodSugar(String name, int yearOfBirth, double bloodSugarLevel) {
         this.name = name;
-        this.yob = yob;
-        this.sugarLevel = sugarLevel;
+        this.yearOfBirth = yearOfBirth;
+        this.bloodSugarLevel = bloodSugarLevel;
     }
-
-    // Setters and Getters
-    // ...
 
     public void display() {
-        System.out.println("ID: " + id + ", Name: " + name + ", Age: " + calculateAge() + ", Sugar Level: " + sugarLevel);
+        System.out.println("Name: " + name);
+        System.out.println("Year of Birth: " + yearOfBirth);
+        System.out.println("Blood Sugar Level: " + bloodSugarLevel);
     }
 
-    private int calculateAge() {
-        int currentYear = Year.now().getValue();
-        return currentYear - yob;
+    public String getCategory() {
+        // Logic to determine blood sugar category
+        return "Normal"; // Placeholder
     }
 
-    @Override
-    public SourceVersion getSupportedSourceVersion() {
-        return SourceVersion.latest();
+    public String getRecommendation() {
+        // Logic to provide recommendations based on blood sugar level
+        return "No recommendations"; // Placeholder
     }
+
+    // Calculate age based on the current year
+    public int calculateAge() {
+        Calendar now = Calendar.getInstance();
+        int currentYear = now.get(Calendar.YEAR);
+        return currentYear - yearOfBirth;
+    }
+
+    // Getters and setters...
 }
 
-public class BloodSugar{
-    private List<BloodSugar> records;
+public class BloodSugarMonitor {
+    private ArrayList<BloodSugar> users;
 
-    public Tester() {
-        records = new ArrayList<>();
-    }
-
-    public void displayMenu() {
-        System.out.println("1. Create a record");
-        System.out.println("2. Show blood sugar data for all users");
-        System.out.println("3. Show blood sugar data for a selected user");
-        System.out.println("4. Delete all");
-        System.out.println("5. Exit application");
+    public BloodSugarMonitor() {
+        this.users = new ArrayList<>();
     }
 
     public void index() {
-        for (BloodSugar record : records) {
-            record.display();
+        for (BloodSugar user : users) {
+            user.display();
         }
     }
 
     public void view(int id) {
-        for (BloodSugar record : records) {
-            if (record.getId() != id) {
-            } else {
-                record.display();
-                // Add blood sugar category and recommendations here
-                break;
-            }
+        if (id >= 0 && id < users.size()) {
+            BloodSugar user = users.get(id);
+            user.display();
+            System.out.println("Age: " + user.calculateAge());
+            System.out.println("Category: " + user.getCategory());
+            System.out.println("Recommendation: " + user.getRecommendation());
+        } else {
+            System.out.println("Invalid user ID");
         }
     }
 
-    public void create(int id, String name, int yob, int sugarLevel) {
-        BloodSugar newRecord = new BloodSugar(id, name, yob, sugarLevel);
-        records.add(newRecord);
+    public void create() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter name:");
+        String name = scanner.nextLine();
+        System.out.println("Enter year of birth:");
+        int yearOfBirth = scanner.nextInt();
+        System.out.println("Enter blood sugar level:");
+        double bloodSugarLevel = scanner.nextDouble();
+        BloodSugar user = new BloodSugar(name, yearOfBirth, bloodSugarLevel);
+        users.add(user);
     }
 
     public void delete() {
-        records.clear();
+        users.clear();
+        System.out.println("All records deleted.");
     }
 
     public void exit() {
+        System.out.println("Exiting...");
         System.exit(0);
     }
 
     public static void main(String[] args) {
-        Tester tester = new Tester();
+        BloodSugarMonitor monitor = new BloodSugarMonitor();
         Scanner scanner = new Scanner(System.in);
-        String choice;
-
-        do {
-            tester.displayMenu();
+        while (true) {
+            System.out.println("Menu:");
+            System.out.println("1. Create a record");
+            System.out.println("2. Show blood sugar data for all users");
+            System.out.println("3. Show blood sugar data for a selected user");
+            System.out.println("4. Delete all");
+            System.out.println("5. Exit");
             System.out.print("Enter your choice: ");
-            choice = scanner.nextLine();
-
+            int choice = scanner.nextInt();
             switch (choice) {
-                case "1":
-                    // Gather input for new record and call create method
+                case 1:
+                    monitor.create();
                     break;
-                case "2":
-                    tester.index();
+                case 2:
+                    monitor.index();
                     break;
-                case "3":
+                case 3:
                     System.out.print("Enter user ID: ");
                     int id = scanner.nextInt();
-                    tester.view(id);
+                    monitor.view(id);
                     break;
-                case "4":
-                    tester.delete();
+                case 4:
+                    monitor.delete();
                     break;
-                case "5":
-                    tester.exit();
+                case 5:
+                    monitor.exit();
                     break;
                 default:
                     System.out.println("Invalid choice");
             }
-        } while (!choice.equals("5"));
+        }
     }
 }
+
+      
+
+  
+    
